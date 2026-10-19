@@ -1,0 +1,3 @@
+# Suprimentos HTML
+
+Preservar sessão CENTRAL e Worker. Somente /api/suprimentos-html. Indicadores e cálculos são do backend. Nenhum dado operacional, credencial, PBIX ou planilha neste repositório público. Admin/Diretor sempre gerais; outros acessos exigem liberação no servidor. Robôs somente Admin, sem comando arbitrário no navegador. Não alterar módulos Comercial/PCP para implementar funcionalidades aqui. Preservar todo histórico disponível. Mobile: mínimo4barras se houver dados, rolagem somente no controle do componente e tabelas centralizadas. Verificar testes, sintaxeJS e Chrome320/390/1366. Atualizar hashes com tools/version_assets.py antes de publicar CSS/JS.

@@ -1,0 +1,386 @@
+[
+  {
+    "tabela": "Medida de PMP",
+    "nome": "PMP Entrada"
+  },
+  {
+    "tabela": "Medida de PMP",
+    "nome": "Prazo Entrada Conferência"
+  },
+  {
+    "tabela": "Medida de PMP",
+    "nome": "Valor Nominal Total"
+  },
+  {
+    "tabela": "Medida de PMP",
+    "nome": "Rank For"
+  },
+  {
+    "tabela": "Medida de PMP",
+    "nome": "Tempo Lanç Ponderado"
+  },
+  {
+    "tabela": "Medida de PMP",
+    "nome": "PMP Emissão Ponderado"
+  },
+  {
+    "tabela": "Medida de PMP",
+    "nome": "PMP Entrada Ponderado"
+  },
+  {
+    "tabela": "Medida de PMP",
+    "nome": "Grupo Gestão com Compra"
+  },
+  {
+    "tabela": "Medida de PMP",
+    "nome": "Filtro - Tem Compra"
+  },
+  {
+    "tabela": "Ultima_Atualizacao",
+    "nome": "Última Atualização"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Ranking Fornecedor"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Valor Acumulado ABC"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Valor Total ABC"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "% Acumulado ABC"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Classe ABC"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Valor Compras"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Valor Compras Item"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Ranking Item"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Valor Total Itens"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "% do Total Item"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Valor Acumulado ABC Item"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "% Acumulado ABC Item"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Classe ABC Item"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Valor Compras Comprador"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Ranking Comprador"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Valor Total Compradores"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "% do Total Comprador"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Valor Acumulado ABC Comprador"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "% Acumulado ABC Comprador"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Classe ABC Comprador"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "% do Total Fornecedor"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Valor Classe A Fornecedor"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Valor Classe B Fornecedor"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Valor Classe C Fornecedor"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Valor Classe A Item"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Valor Classe B Item"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Valor Classe C Item"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Valor Classe A Comprador"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Valor Classe B Comprador"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Valor Classe C Comprador"
+  },
+  {
+    "tabela": "suprimentos_ordens_compras_emitidas",
+    "nome": "Valor Compras Base"
+  },
+  {
+    "tabela": "suprimentos_ordens_compras_emitidas",
+    "nome": "Qtd Compras por Setor"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "% Tipo Compra Fornecedores"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "% Tipo Compra item"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "% Tipo Compra Compradores"
+  },
+  {
+    "tabela": "suprimentos_ordens_compras_emitidas",
+    "nome": "Quantidade Comprada"
+  },
+  {
+    "tabela": "suprimentos_solicitacoes_requisitante_tratado",
+    "nome": "Qtd OC por Requisitante"
+  },
+  {
+    "tabela": "suprimentos_solicitacoes_requisitante_tratado",
+    "nome": "Valor Compras por Requisitante"
+  },
+  {
+    "tabela": "suprimentos_solicitacoes_requisitante_tratado",
+    "nome": "Ranking Fornecedor Requisitante"
+  },
+  {
+    "tabela": "suprimentos_solicitacoes_requisitante_tratado",
+    "nome": "% do Total Fornecedor Requisitante"
+  },
+  {
+    "tabela": "suprimentos_solicitacoes_requisitante_tratado",
+    "nome": "Valor Acumulado ABC Requisitante"
+  },
+  {
+    "tabela": "suprimentos_solicitacoes_requisitante_tratado",
+    "nome": "% Acumulado ABC Requisitante"
+  },
+  {
+    "tabela": "suprimentos_solicitacoes_requisitante_tratado",
+    "nome": "Classe ABC Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Valor Compras por Requisitante ITEM"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Ranking Item Requisitante ITEM"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "% do Total Item Requisitante ITEM"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "% Acumulado ABC Item Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Classe ABC Item Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "UN Exibição"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Valor Compras por Requisitante COMPRAS"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Ranking Comprador Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "% do Total Comprador Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "% Acumulado ABC Comprador Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Classe ABC Comprador Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Valor Tipo Compra por Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Valor Classe A Comprador Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Valor Classe B Comprador Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Valor Classe C Comprador Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Valor Tipo Compra por Requisitante COMPRA"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "% Tipo Compra por Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Valor Classe A Item Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Valor Classe B Item Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Valor Classe C Item Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "% Tipo Compra por Requisitante COMPRA"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Valor Classe A Fornecedor Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Valor Classe B Fornecedor Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Valor Classe C Fornecedor Requisitante"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "Valor Tipo Compra por Requisitante FORNECEDOR"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Fornecedores",
+    "nome": "% Tipo Compra por Requisitante FORNECEDOR"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Compradores",
+    "nome": "Medida"
+  },
+  {
+    "tabela": "SLA - Medida",
+    "nome": "SLA Médio Compra (Dias)"
+  },
+  {
+    "tabela": "SLA - Medida",
+    "nome": "Qtd Solicitações SLA"
+  },
+  {
+    "tabela": "SLA - Medida",
+    "nome": "SLA Mediano Compra (Dias)"
+  },
+  {
+    "tabela": "SLA - Medida",
+    "nome": "Maior SLA Compra (Dias)"
+  },
+  {
+    "tabela": "SLA - Medida",
+    "nome": "Qtd Dentro SLA"
+  },
+  {
+    "tabela": "SLA - Medida",
+    "nome": "% Dentro SLA"
+  },
+  {
+    "tabela": "SLA - Medida",
+    "nome": "Ranking SLA Comprador"
+  },
+  {
+    "tabela": "SLA - Medida",
+    "nome": "SLA Médio Compra Gráfico"
+  },
+  {
+    "tabela": "Medida_CurvaABC_Item",
+    "nome": "Teste Valor Item Dim"
+  },
+  {
+    "tabela": "SLA - Solicitações",
+    "nome": "SLA Solicitações Dias"
+  },
+  {
+    "tabela": "SLA - Solicitações",
+    "nome": "Qtd Solicitações"
+  },
+  {
+    "tabela": "SLA - Solicitações",
+    "nome": "Qtd Cotação"
+  },
+  {
+    "tabela": "SLA - Solicitações",
+    "nome": "Qtd Pendente"
+  },
+  {
+    "tabela": "SLA - Solicitações",
+    "nome": "Qtd Solicitações Geral"
+  },
+  {
+    "tabela": "SLA - Medida",
+    "nome": "% Dentro SLA - Abaixo Meta"
+  },
+  {
+    "tabela": "SLA - Medida",
+    "nome": "% Dentro SLA - Acima Meta"
+  }
+]

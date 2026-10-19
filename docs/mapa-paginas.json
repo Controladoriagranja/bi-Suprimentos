@@ -1,0 +1,40 @@
+{
+  "paginas": [
+    {
+      "codigo": "prazo",
+      "titulo": "Prazo de Pagamento",
+      "estado": "implementada",
+      "api": "/api/suprimentos-html/painel?relatorio=prazo"
+    },
+    {
+      "codigo": "sla",
+      "titulo": "SLA de Compras",
+      "estado": "implementada",
+      "api": "/api/suprimentos-html/painel?relatorio=sla"
+    },
+    {
+      "codigo": "solicitacoes",
+      "titulo": "SLA de Solicitações",
+      "estado": "implementada",
+      "api": "/api/suprimentos-html/painel?relatorio=solicitacoes"
+    },
+    {
+      "codigo": "abc-fornecedor",
+      "titulo": "ABC de Fornecedores",
+      "estado": "implementada",
+      "api": "/api/suprimentos-html/painel?relatorio=abc-fornecedor"
+    },
+    {
+      "codigo": "abc-comprador",
+      "titulo": "ABC de Compradores",
+      "estado": "implementada",
+      "api": "/api/suprimentos-html/painel?relatorio=abc-comprador"
+    },
+    {
+      "codigo": "abc-item",
+      "titulo": "ABC de Itens",
+      "estado": "implementada",
+      "api": "/api/suprimentos-html/painel?relatorio=abc-item"
+    }
+  ]
+}
