@@ -8,7 +8,7 @@ Os dados históricos e os cálculos ficam no PostgreSQL e na API `/api/supriment
 
 Abra pela CENTRAL para utilizar sua sessão. Os filtros têm pesquisa e seleção múltipla. Clique em descrições ou barras para filtrar a página; repita o clique ou use uma área vazia para retirar seleções visuais. O agrupamento por mês inclui o ano. As tabelas têm paginação, valores centralizados e rolagem pelo controle próprio no celular. Os gráficos mostram quatro barras por janela quando há pelo menos quatro períodos disponíveis.
 
-Admin e Diretor têm alcance geral. Os demais usuários precisam da liberação do relatório e de alcance geral compatível com Suprimentos. Vínculos de vendedor ou supervisor comercial não são convertidos em compradores. Somente administradores acionam os robôs. A versão confirmada dos dados permanece disponível durante extração e tratamento.
+Admin e Diretor têm alcance geral. Os demais usuários precisam da liberação do relatório e de alcance geral compatível com Suprimentos. Vínculos de vendedor ou supervisor comercial não são convertidos em compradores. O acionamento de robôs pela API é restrito a administradores; os controles de atualização não são exibidos nas telas dos relatórios. A versão confirmada dos dados permanece disponível durante extração e tratamento.
 
 ## Desenvolvimento
 

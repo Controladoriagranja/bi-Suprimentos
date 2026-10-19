@@ -16,4 +16,4 @@ Prazo: valores nominais; médias ponderadas por valor positivo, filtro de até13
 
 Os históricos de cada fonte permanecem disponíveis nas cargas versionadas. A data da última fonte é exibida separadamente do momento da carga. Erros de extração preservam a última revisão confirmada. A cobertura histórica de uma carga não pode diminuir silenciosamente.
 
-O painel retorna `detalhes` com os títulos, notas e itens ou solicitações do mesmo recorte, conforme a tela. A paginação dos registros usa `detalhe_pagina`; a dos agrupamentos usa `pagina`. Ambas respeitam `tamanho` e devolvem contagem integral. Os registros ficam em “Conferir registros do período”.
+O painel retorna `detalhes` com os títulos, notas e itens ou solicitações do mesmo recorte, conforme a tela. A paginação dos registros usa `detalhe_pagina`; a dos agrupamentos usa `pagina`. Ambas respeitam `tamanho` e devolvem contagem integral. Esses registros continuam disponíveis na API; o bloco adicional de conferência não é exibido nos relatórios.
