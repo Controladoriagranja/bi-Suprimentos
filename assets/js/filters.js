@@ -2,14 +2,14 @@
 window.SuprimentosFilters=class {
  constructor(host,options,query,onApply){
   this.host=host;this.options=options;this.onApply=onApply;this.states={};this.labels={};this.requests={};this.timers={};
-  const fields=options.campos.map(c=>[c.codigo,c.nome]);this.fields=[...fields.slice(0,3),['ano','Ano'],['mes','Mês'],...fields.slice(3)];this.primaryCount=6;
+  const fields=options.campos.map(c=>[c.codigo,c.nome]);this.fields=[...fields.slice(0,3),['ano','Ano'],['mes','Mês'],...fields.slice(3)];this.primaryCount=6;if(options.relatorio==='sla'){const primary=['mes','ano','grupo','unidade','comprador','gestao','situacao'];this.fields=[...primary.map(k=>[k,k==='mes'?'Mês':k==='ano'?'Ano':fields.find(([f])=>f===k)[1]]),...fields.filter(([k])=>!primary.includes(k))];this.primaryCount=7;}
   this.fixedCfop=options.acesso?.cfop_vendas_fixo===true||['seller','supervisor'].includes(options.acesso?.modo);
   this.months=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   this.defaults={...options.padrao,ano:[],mes:[]};
   host.innerHTML='<form id="formFiltros"><div class="com-filter-head"><h2>Filtros</h2><div class="com-actions"><button type="button" class="button secondary" id="limpar">Limpar filtros</button></div></div><div class="com-filter-grid com-main-filters">'+this.fields.slice(0,this.primaryCount).map(([k,label])=>this.field(k,label)).join('')+'</div><details class="com-more" id="outrosFiltros"><summary>Outros filtros <span id="outrosAtivos"></span></summary><div class="com-filter-grid">'+this.fields.slice(this.primaryCount).map(([k,label])=>this.field(k,label)).join('')+'<label>Data inicial<input type="date" name="inicio"></label><label>Data final<input type="date" name="fim"></label></div></details><p class="com-filter-note">Os filtros são aplicados automaticamente.</p></form>';
-  this.form=host.querySelector('form');const end=options.periodo.fim,begin=options.periodo.inicio&&options.periodo.inicio>'2023-01-01'?options.periodo.inicio:'2023-01-01';
+  this.form=host.querySelector('form');const end=options.datas_opcionais?'':options.periodo.fim,begin=options.datas_opcionais?'':options.periodo.inicio&&options.periodo.inicio>'2023-01-01'?options.periodo.inicio:'2023-01-01';
   this.form.elements.inicio.value=query.get('inicio')||begin;this.form.elements.fim.value=query.get('fim')||end;
-  for(const k of ['inicio','fim']){this.form.elements[k].min=options.periodo.inicio;this.form.elements[k].max=end;}
+  for(const k of ['inicio','fim']){this.form.elements[k].min=options.periodo.inicio;this.form.elements[k].max=options.periodo.fim;}
   for(const [k] of this.fields){
    this.states[k]={values:query.has(k)?query.getAll(k).filter(Boolean):query.has(k+'_exc')?[]:[...(this.defaults[k]||[])],excluded:query.getAll(k+'_exc').filter(Boolean)};
    if(this.fixedCfop&&['cfop','descricao_cfop'].includes(k))this.states[k]={values:[...(this.defaults[k]||[])],excluded:[]};
