@@ -44,7 +44,7 @@
 .com-picker-panel{position:absolute;top:calc(100% + 5px);left:0;width:max(100%,280px);max-width:calc(100vw - 48px);background:var(--card);color:var(--foreground);border:1px solid var(--border);border-radius:9px;padding:10px;box-shadow:0 8px 24px #0002}
 .com-picker-panel input[type=search]{width:100%;height:36px;margin-bottom:8px;font-size:12px;min-width:0}
 .com-picker-panel label{display:flex;align-items:center;gap:8px;padding:8px 3px;cursor:pointer;font-size:12px;line-height:1.35}
-.com-picker-panel input[type=checkbox]{width:16px;height:16px;flex:0 0 16px;accent-color:#7a1726;min-height:0;margin:0}
+.com-picker-panel :is(input[type=checkbox],input[type=radio]){width:16px;height:16px;flex:0 0 16px;accent-color:#7a1726;min-height:0;margin:0}
 .com-pick-all{border-bottom:1px solid #e5dfda;font-weight:600}
 .com-options{max-height:240px;overflow-y:auto;overscroll-behavior:contain}
 .com-options label span{overflow-wrap:anywhere}
@@ -73,9 +73,9 @@
 
 /* Listas compactas: checkbox e nome na mesma linha, sem herdar a coluna dos filtros. */
 .comercial-report .com-picker-panel label{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;padding:6px 2px;min-height:28px;font-size:11px;font-weight:400;text-align:left}
-.comercial-report .com-picker-panel input[type=checkbox]{width:14px;max-width:14px;height:14px;min-height:14px;flex:0 0 14px;margin:0;padding:0}
+.comercial-report .com-picker-panel :is(input[type=checkbox],input[type=radio]){width:14px;max-width:14px;height:14px;min-height:14px;flex:0 0 14px;margin:0;padding:0}
 .comercial-report .com-picker-panel .com-pick-all{font-weight:600}
-.comercial-report .com-options label span{white-space:normal;line-height:1.3}
+.comercial-report .com-options label span{min-width:0;flex:1;white-space:normal;line-height:1.3}
 .com-picker-panel{padding:8px;border-radius:7px;width:max(100%,250px)}
 .com-picker-panel input[type=search]{height:32px;font-size:11px}
 .com-options{max-height:220px}
