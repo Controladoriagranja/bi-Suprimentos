@@ -29,7 +29,7 @@ window.SuprimentosSaving={
  const color=v=>v==null?'':Number(v)>0?'saving-positive':Number(v)<0?'saving-negative':'';
  function render(d){
   const t=d.totais;
-  $('savingCards').innerHTML=[['Saving total financeiro',money(t.saving),'Diferença unitária × quantidade comprada'],['Variação ponderada',percent(t.percentual),'Economia positiva · aumento negativo'],['Compras analisadas',money(t.valor_atual),'Valor dos itens nos meses selecionados'],['Sem referência',number(t.sem_referencia,0),'Linhas excluídas do cálculo das diferenças']].map(([k,v,h])=>'<article class="card com-kpi"><span>'+esc(k)+'</span><strong>'+esc(v)+'</strong><small>'+esc(h)+'</small></article>').join('');
+  $('savingCards').innerHTML=[['Saving total financeiro',money(t.saving),'Diferença unitária × quantidade comprada'],['Variação ponderada',percent(t.percentual),'Economia positiva · aumento negativo'],['Compras analisadas',money(t.valor_atual),'Valor dos itens no mês consultado'],['Sem referência',number(t.sem_referencia,0),'Linhas excluídas do cálculo das diferenças']].map(([k,v,h])=>'<article class="card com-kpi"><span>'+esc(k)+'</span><strong>'+esc(v)+'</strong><small>'+esc(h)+'</small></article>').join('');
   const h=d.historico,complete=h.concluidos===h.meses_previstos;
   $('savingCoverage').textContent='Referência até '+date(d.referencia)+' · Dados disponíveis: '+date(d.cobertura.inicio)+' a '+date(d.cobertura.fim)+'. '+(complete?'Carga de 2020 a 2024 concluída.':'Histórico de 2020 a 2024 em carga: '+h.concluidos+' de '+h.meses_previstos+' meses concluídos. A comparação usa somente os dados já carregados.')+(t.variacoes_elevadas?' Atenção: '+t.variacoes_elevadas+' linha(s) com variação de pelo menos 90%; confira preço e quantidade nas notas.':'')+(h.falhas?' Há '+h.falhas+' execução(ões) com erro; a última base confirmada foi preservada.':'');
   const widths=[65,155,90,105,90,105,110,85],headers=d.colunas.map(c=>{const sort=['saving','percentual','item_codigo','quantidade','preco_atual','preco_referencia'].includes(c.codigo),active=c.codigo===ordem;return '<th scope="col" '+(sort?'aria-sort="'+(active?(direcao==='asc'?'ascending':'descending'):'none')+'"':'')+'>'+(sort?'<button type="button" class="com-row-link saving-sort" data-sort="'+c.codigo+'">'+esc(c.nome)+(active?(direcao==='asc'?' ↑':' ↓'):' ↕')+'</button>':esc(c.nome))+'</th>';}).join('');
@@ -39,7 +39,7 @@ window.SuprimentosSaving={
   box.querySelectorAll('[data-saving-item]').forEach(b=>b.onclick=()=>selectItem(b.dataset.savingItem,b.dataset.name));
   renderEvolution(d);
   box.querySelectorAll('[data-purchase]').forEach(b=>b.onclick=()=>{detailTrigger=b;detailId=b.dataset.purchase;detailPage=1;dialog.showModal();detail();});PcpMobileScroll.table(box);
-  $('savingInfo').textContent=number(d.total,0)+' linhas por item, unidade de medida e mês · Preços e diferença por unidade, conforme Valor Unitário Item. Total financeiro = diferença unitária × quantidade.';$('savingPage').textContent='Página '+d.pagina+' de '+Math.max(1,Math.ceil(d.total/d.tamanho));$('savingPrev').disabled=d.pagina===1;$('savingNext').disabled=!d.mais;
+  $('savingInfo').textContent=number(d.total,0)+' itens por unidade de medida · Mês consultado: '+String(d.mes_consulta).slice(5,7)+'/'+String(d.mes_consulta).slice(0,4)+' · Preços e diferenças unitários. Total financeiro = diferença unitária × quantidade.';$('savingPage').textContent='Página '+d.pagina+' de '+Math.max(1,Math.ceil(d.total/d.tamanho));$('savingPrev').disabled=d.pagina===1;$('savingNext').disabled=!d.mais;
   const times=d.fontes.map(x=>new Date(x.atualizado_em).getTime()).filter(Number.isFinite);$('ultimaAtualizacao').textContent=times.length?new Date(Math.max(...times)).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',hour12:false}):'—';$('estado').textContent='Dados reais · '+date(d.periodo.inicio)+' a '+date(d.periodo.fim)+' · '+number(d.periodo.registros,0)+' registros no recorte';
  }
 
@@ -52,10 +52,10 @@ window.SuprimentosSaving={
   charts.forEach(c=>c.dispose());charts=[];const host=$('savingEvolutionCharts');host.innerHTML='';
   $('savingEvolution').hidden=!d.evolucao;if(!d.evolucao)return;
   const e=d.evolucao;const compact=v=>Math.abs(v)>=1e6?'R$ '+number(v/1e6,1)+' mi':Math.abs(v)>=1e3?'R$ '+number(v/1e3,1)+' mil':money(v);
-  $('savingEvolutionTitle').textContent=e.item_codigo+' - '+(e.descricao||'Item sem compras no recorte')+' · Preço médio unitário ponderado pela quantidade';
-  $('savingPeriodSelection').textContent=picker.periodSelection?.label||'Período: '+date(e.inicio)+' a '+date(e.fim);$('savingClearPeriod').hidden=!picker.periodSelection;
+  $('savingEvolutionTitle').textContent=e.item_codigo+' - '+(e.descricao||'Item sem histórico de compras')+' · Preço médio unitário ponderado pela quantidade';
+  $('savingPeriodSelection').textContent=picker.periodSelection?.label||'Histórico disponível: '+date(e.inicio)+' a '+date(e.fim);$('savingClearPeriod').hidden=!picker.periodSelection;
   document.querySelectorAll('[data-saving-period]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.savingPeriod===period)));
-  if(!d.serie.length){host.innerHTML='<p class="com-empty">Nenhuma compra encontrada para o item neste período.</p>';return;}
+  if(!d.serie.length){host.innerHTML='<p class="com-empty">Nenhuma compra encontrada no histórico disponível deste item.</p>';return;}
   const groups=SuprimentosSaving.groupSeries(d.serie);
   if(!groups.has(chartUnit))chartUnit=groups.keys().next().value;
   if(groups.size>1){const label=document.createElement('label');label.className='sup-page-size';label.innerHTML='Unidade de medida <select aria-label="Unidade de medida do preço">'+[...groups.keys()].map(um=>'<option value="'+esc(um)+'" '+(um===chartUnit?'selected':'')+'>'+esc(um||'Não informada')+'</option>').join('')+'</select>';label.querySelector('select').onchange=e=>{chartUnit=e.target.value;renderEvolution(d);};host.append(label);}
@@ -69,7 +69,13 @@ window.SuprimentosSaving={
   }
  }
  let resizeTimer;addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(lastData)renderEvolution(lastData);},150);});
- async function load(){if(!picker)return;const filters=picker.read();if(!filters)return;const next=JSON.stringify(filters);if(next!==signature){pagina=1;signature=next;closeDetail();}const id=++generation;controller?.abort();controller=new AbortController();busy(true);$('erro').hidden=true;
+ async function load(){if(!picker)return;let filters=picker.read();if(!filters)return;
+  // A tabela consulta um único mês; a API busca a evolução sem esse recorte.
+  const calendarAnchor=filters.fim||filters.inicio||picker.options.periodo.fim;
+  const year=filters.ano?.filter(v=>v&&v!=='__nenhum__').at(-1)||calendarAnchor.slice(0,4),month=filters.mes?.filter(v=>v&&v!=='__nenhum__').at(-1)||String(Number(calendarAnchor.slice(5,7)));
+  for(const[k,value]of [['ano',year],['mes',month]])if(!filters[k]?.includes('__nenhum__'))picker.set(k,value);
+  if(picker.periodSelection)picker.periodSelection.applied=JSON.stringify(picker.calendarState());
+  filters=picker.read();const next=JSON.stringify(filters);if(next!==signature){pagina=1;signature=next;closeDetail();}const id=++generation;controller?.abort();controller=new AbortController();busy(true);$('erro').hidden=true;
   const params={...filters,relatorio:'saving',pagina,tamanho:Number($('savingSize').value),ordem,direcao,periodo:period};const url=new URLSearchParams();for(const[k,v]of Object.entries(params))for(const item of Array.isArray(v)?v:[v])if(item!==''&&item!=null)url.append(k,item);for(const k of ['ano','mes'])if(!filters[k]?.length&&!filters[k+'_exc']?.length)url.append(k,'');history.replaceState(null,'',location.pathname+'?'+url);
   try{const d=await SuprimentosApi.get('painel',params,controller.signal);if(id!==generation)return;const reveal=d.evolucao&&lastData?.evolucao?.item_codigo!==d.evolucao.item_codigo;lastData=d;render(d);if(reveal)requestAnimationFrame(()=>$('savingEvolution').scrollIntoView({block:'start',behavior:'smooth'}));}catch(e){if(id===generation)failure(e);}finally{if(id===generation)busy(false);}
  }
