@@ -15,6 +15,7 @@ window.SuprimentosFilters=class {
   for(const k of ['inicio','fim']){this.form.elements[k].min=options.periodo.inicio;this.form.elements[k].max=options.periodo.fim;}
   for(const [k] of this.fields){
    this.states[k]={values:query.has(k)?query.getAll(k).filter(Boolean):query.has(k+'_exc')?[]:[...(this.defaults[k]||[])],excluded:query.getAll(k+'_exc').filter(Boolean)};
+   if(k==='ano'&&Array.isArray(options.anos_disponiveis)){const allowed=options.anos_disponiveis.map(String),state=this.states[k],hadSelection=state.values.length>0;state.values=state.values.filter(v=>v==='__nenhum__'||allowed.includes(v));if(hadSelection&&!state.values.length)state.values=['__nenhum__'];state.excluded=state.excluded.filter(v=>allowed.includes(v));}
    if(this.fixedCfop&&['cfop','descricao_cfop'].includes(k))this.states[k]={values:[...(this.defaults[k]||[])],excluded:[]};
    this.labels[k]=new Map();this.refresh(k);
    const detail=host.querySelector('[data-filter="'+k+'"]');
@@ -58,7 +59,7 @@ window.SuprimentosFilters=class {
   try{
    let data;
    if(['ano','mes','unidade_cadastro'].includes(k)){
-    const end=this.options.periodo.fim;let rows=k==='mes'?this.months.map((nome,i)=>({codigo:String(i+1),nome})):k==='ano'?Array.from({length:Number(end.slice(0,4))-Number(this.options.periodo.inicio.slice(0,4))+1},(_,i)=>({codigo:String(Number(this.options.periodo.inicio.slice(0,4))+i),nome:String(Number(this.options.periodo.inicio.slice(0,4))+i)})):this.options.unidades.map(x=>({codigo:x.nome,nome:this.unitLabel(x)}));
+    const end=this.options.periodo.fim;let rows=k==='mes'?this.months.map((nome,i)=>({codigo:String(i+1),nome})):k==='ano'&&Array.isArray(this.options.anos_disponiveis)?this.options.anos_disponiveis.map(y=>({codigo:String(y),nome:String(y)})):k==='ano'?Array.from({length:Number(end.slice(0,4))-Number(this.options.periodo.inicio.slice(0,4))+1},(_,i)=>({codigo:String(Number(this.options.periodo.inicio.slice(0,4))+i),nome:String(Number(this.options.periodo.inicio.slice(0,4))+i)})):this.options.unidades.map(x=>({codigo:x.nome,nome:this.unitLabel(x)}));
     data={dados:rows.filter(r=>(r.nome+' '+r.codigo).toLocaleLowerCase().includes(q.toLocaleLowerCase())),mais:false};
    }else if(k==='unidade'){data=await SuprimentosApi.get('opcoes',{...this.read(),campo:k,q:'',relatorio:this.options.relatorio},request.signal);const normalize=v=>String(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase();data={...data,dados:data.dados.map(r=>({...r,nome:this.unitName(r.codigo)})).filter(r=>normalize(r.codigo+' '+r.nome).includes(normalize(q))).sort((a,b)=>Number(a.codigo)-Number(b.codigo))};}else data=await SuprimentosApi.get('opcoes',{...this.read(),campo:k,q,relatorio:this.options.relatorio},request.signal);
    if(this.requests[k]!==request)return;data.dados=data.dados.filter(row=>this.validOption(k,row));this.rows??={};this.rows[k]=data.dados;for(const row of data.dados)this.labels[k].set(String(row.codigo),row.nome);this.refresh(k);this.draw(k);info.textContent=data.mais?'Exibindo '+data.dados.length+' opções. Digite para localizar outras. Selecionar todos inclui todas as opções.':data.dados.length+' opções';
