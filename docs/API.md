@@ -32,3 +32,5 @@ A contagem de ordens por requisitante usa a emissão da solicitação para o per
 Saving usa Valor_Unitario_Item como preço tanto na referência quanto na média mensal e na evolução. O campo saving de cada linha é a diferença unitária; saving_total é a diferença multiplicada pela quantidade. totais.saving e seu percentual continuam financeiros e ponderados pela base de referência. valor_atual usa Valor_Item.
 
 A tabela de Saving consulta um único mês: mes_consulta informa o mês resolvido (por padrão o mês corrente). Não replica o item por meses históricos. A interface usa seleção única de ano/mês. A serie de evolução ignora ano, mes, inicio e fim, preservando os filtros de item e demais dimensões; evolucao.inicio/fim informam a cobertura desse histórico. Unidades de medida são normalizadas para maiúsculas sem converter unidades distintas.
+
+GET /saving/compras: notas que compõem o preço médio do mês, com os mesmos filtros da tabela, um item_codigo e um obrigatórios e pagina/tamanho. Retorna quantidade, preço unitário ponderado, valor dos itens e notas paginadas com compra_id para abrir /saving/compra/{compra_id}. Mantém autorização do relatório.
