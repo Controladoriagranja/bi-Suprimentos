@@ -1,6 +1,6 @@
 # Suprimentos · Granja Brasília
 
-Seis relatórios HTML integrados à CENTRAL e à API privada: Prazo de Pagamento, SLA de Compras, SLA de Solicitações e curvas ABC de Fornecedores, Compradores e Itens.
+Sete relatórios HTML integrados à CENTRAL e à API privada: Prazo de Pagamento, SLA de Compras, SLA de Solicitações, curvas ABC de Fornecedores, Compradores e Itens, e Indicador de Saving.
 
 Os dados históricos e os cálculos ficam no PostgreSQL e na API `/api/suprimentos-html`. Este repositório contém somente a interface. Nenhuma planilha, PBIX, resposta operacional, senha ou token deve ser versionado.
 
@@ -11,6 +11,8 @@ Abra pela CENTRAL para utilizar sua sessão. Os filtros têm pesquisa e seleçã
 Admin e Diretor têm alcance geral. Os demais usuários precisam da liberação do relatório e de alcance geral compatível com Suprimentos. Vínculos de vendedor ou supervisor comercial não são convertidos em compradores. O acionamento de robôs pela API é restrito a administradores; os controles de atualização não são exibidos nas telas dos relatórios. A versão confirmada dos dados permanece disponível durante extração e tratamento.
 
 ## Desenvolvimento
+
+O Indicador de Saving está em `index.html?relatorio=saving`. Compara o preço unitário médio ponderado de cada item, unidade de medida e mês com a última nota até a data de referência, pesquisada em todas as empresas, unidades, fornecedores e compradores. A diferença em valor corresponde à economia total sobre a quantidade comprada; valores negativos indicam aumento de custo. A diferença percentual total é ponderada pela base de referência. Os filtros têm pesquisa, as diferenças permitem ordenação e o valor da última compra abre a nota completa. A tela informa a cobertura confirmada e o andamento da carga histórica desde 2020. A data utilizada para os meses e a referência é a entrada fiscal; a emissão também aparece nos detalhes.
 
 Use um servidor estático local, por exemplo `python -m http.server 8130`. Consultas autenticadas dependem do portal e do Worker. Não crie outro login nem inclua Basic no navegador.
 

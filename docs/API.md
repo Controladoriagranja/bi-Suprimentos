@@ -6,6 +6,7 @@ Prefixo `/api/suprimentos-html`, pelo Worker existente. O navegador envia soment
 - `GET /filtros?relatorio=...`: campos, período e autorização administrativa.
 - `GET /opcoes?relatorio=...&campo=...&q=...`: pesquisa no contexto, até100opções.
 - `GET /painel?relatorio=...`: indicadores integrais, séries, tabelas paginadas e complementos.
+- `GET /saving/compra/{compra_id}`: nota de referência completa, com todos os campos de negócio e itens paginados; exige o mesmo acesso ao relatório.
 - `GET /catalogo` e `GET /dados/{fonte}`: catálogo e bases originais, somente Admin.
 - `GET /robos`: robôs autorizados e execuções recentes, somente Admin.
 - `POST /robos/{codigo}/executar`: fila de extração/tratamento/carga, somente Admin. Corpo opcional `inicio`/`fim` em AAAA-MM-DD. Devolve202 e identificador da execução; não executa navegador no Worker.
@@ -15,6 +16,8 @@ Parâmetros analíticos: `inicio`, `fim`, `ano`, `mes`, dimensões da página e 
 Prazo: valores nominais; médias ponderadas por valor positivo, filtro de até130dias para PMP. SLA: dias úteis de segunda a sexta, excluindo a data inicial e incluindo a final; limite10dias para grupo53 e7 para demais. Contagem por chave solicitação/OC/item. ABC: valor líquido, ranking denso, empates compartilham percentual acumulado; limites80% e95%. Filtro por requisitante transfere o conjunto de OCs sem multiplicar valores por linhas de solicitações.
 
 Os históricos de cada fonte permanecem disponíveis nas cargas versionadas. A data da última fonte é exibida separadamente do momento da carga. Erros de extração preservam a última revisão confirmada. A cobertura histórica de uma carga não pode diminuir silenciosamente.
+
+Saving usa `relatorio=saving` e os filtros `tipo_sc`, `ano`, `mes`, `comprador`, `empresa`, `unidade`, `grupo_item`, `fornecedor`, `item_codigo`, `inicio`, `fim` e `referencia` (AAAA-MM-DD). A seleção inicial é o mês corrente e a referência é 31 de dezembro do ano anterior. A referência global não recebe os filtros das compras atuais e mantém o mesmo item e unidade de medida. `ordem=saving|percentual|item_codigo|quantidade|preco_atual|preco_referencia` e `direcao=asc|desc` ordenam a base inteira antes da paginação. Quantidades e preços não positivos são excluídos. Itens sem referência permanecem visíveis e são excluídos dos totais de diferenças. O percentual agregado é a soma dos savings dividida pela soma dos custos de referência, sem somar percentuais. `cobertura` e `historico` informam os dados confirmados e o progresso do backfill de 2020 a 2024; os dados de 2025 em diante seguem as cargas existentes. O inventário do PBIX continua documentando somente as seis páginas originais.
 
 O painel retorna `detalhes` com os títulos, notas e itens ou solicitações do mesmo recorte, conforme a tela. A paginação dos registros usa `detalhe_pagina`; a dos agrupamentos usa `pagina`. Ambas respeitam `tamanho` e devolvem contagem integral. Esses registros continuam disponíveis na API; o bloco adicional de conferência não é exibido nos relatórios.
 

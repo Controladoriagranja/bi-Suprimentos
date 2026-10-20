@@ -1,13 +1,14 @@
 "use strict";
 (()=>{
  const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const pages={prazo:'Prazo de Pagamento',sla:'SLA de Compras',solicitacoes:'SLA de Solicitações','abc-fornecedor':'ABC de Fornecedores','abc-comprador':'ABC de Compradores','abc-item':'ABC de Itens'};
+ const pages={prazo:'Prazo de Pagamento',sla:'SLA de Compras',solicitacoes:'SLA de Solicitações','abc-fornecedor':'ABC de Fornecedores','abc-comprador':'ABC de Compradores','abc-item':'ABC de Itens',saving:'Indicador de Saving'};
  const requested=new URLSearchParams(location.search).get('relatorio'),page=pages[requested]?requested:'prazo',mobile=()=>PcpMobileScroll.active();
  const num=(v,d=0)=>v==null?'—':Number(v).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}),money=v=>v==null?'—':Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),date=v=>v?String(v).slice(0,10).split('-').reverse().join('/'):'—';
  const compact=v=>Math.abs(v)>=1e6?'R$ '+num(v/1e6,1)+' mi':Math.abs(v)>=1e3?'R$ '+num(v/1e3,1)+' mil':money(v);
  const format=(v,type)=>v==null?'—':type==='money'?money(v):type==='percent'?num(v*100,1)+'%':type==='days'?num(v,2)+' dias':type==='number'?num(v,2):type==='int'?num(v):type==='date'?date(v):String(v);
  let picker,filters={},filterSignature='',period='mes',pagination=1,itemPagination=1,revealItems=false,controller,generation=0,confirmed=false,loading=false,charts=[],lastData;const visual=new Map();
  document.body.dataset.page=page;document.title=pages[page]+' | Suprimentos';$('titulo').textContent=pages[page];
+ if(page==='saving'){SuprimentosSaving.start();return;}
  function busy(value){loading=value;$('carregando').hidden=!value;$('conteudo').setAttribute('aria-busy',String(value));}
  function read(){const value=picker.read();if(!value)return false;const signature=JSON.stringify(value);if(signature!==filterSignature){pagination=1;itemPagination=1;filterSignature=signature;}filters=value;for(const[k,v]of visual)if(filters[k]?.length!==1||String(filters[k][0])!==v)visual.delete(k);const q=new URLSearchParams({relatorio:page});for(const[k,v]of Object.entries(filters))for(const item of Array.isArray(v)?v:[v])if(item)q.append(k,item);history.replaceState(null,'',location.pathname+'?'+q);return true;}
  function select(field,value,label){const same=filters[field]?.length===1&&String(filters[field][0])===String(value);if((page==='abc-fornecedor'&&field==='fornecedor')||(page==='abc-comprador'&&field==='comprador'))revealItems=!same;picker.set(field,same?'':value,label);if(same)visual.delete(field);else visual.set(field,String(value));pagination=1;if(read())load();}
