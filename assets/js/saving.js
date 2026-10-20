@@ -54,8 +54,9 @@ window.SuprimentosSaving={
   const times=d.fontes.map(x=>new Date(x.atualizado_em).getTime()).filter(Number.isFinite);$('ultimaAtualizacao').textContent=times.length?new Date(Math.max(...times)).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',hour12:false}):'—';$('estado').textContent='Dados reais · '+date(d.periodo.inicio)+' a '+date(d.periodo.fim)+' · '+number(d.periodo.registros,0)+' registros no recorte';
  }
 
- function clearItem(){picker.clearPeriodSelection();picker.set('item_codigo','');load();}
- function selectItem(code,name){const current=picker.read();if(!current)return;if(current.item_codigo?.length===1&&current.item_codigo[0]===code){clearItem();return;}picker.set('item_codigo',code,code+' - '+name);load();}
+ let itemSelection=null;
+ function clearItem(){picker.clearPeriodSelection();if(itemSelection){picker.states.item_codigo={values:[...itemSelection.values],excluded:[...itemSelection.excluded]};itemSelection=null;picker.refresh('item_codigo');picker.draw('item_codigo');}else picker.set('item_codigo','');load();}
+ function selectItem(code,name){const current=picker.read();if(!current)return;if(current.item_codigo?.length===1&&current.item_codigo[0]===code){clearItem();return;}if(!itemSelection)itemSelection={values:[...current.item_codigo],excluded:[...current.item_codigo_exc]};picker.set('item_codigo',code,code+' - '+name);itemSelection.applied=String(code);load();}
  $('savingClearItem').onclick=clearItem;
  $('savingClearPeriod').onclick=()=>{picker.clearPeriodSelection();load();};
  document.querySelectorAll('[data-saving-period]').forEach(b=>b.onclick=()=>{period=b.dataset.savingPeriod;load();});
@@ -85,7 +86,7 @@ window.SuprimentosSaving={
   }
  }
  let resizeTimer;addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(lastData)renderEvolution(lastData);},150);});
- async function load(){if(!picker)return;let filters=picker.read();if(!filters)return;
+ async function load(){if(!picker)return;let filters=picker.read();if(!filters)return;if(itemSelection&&(filters.item_codigo.length!==1||filters.item_codigo[0]!==itemSelection.applied||filters.item_codigo_exc.length))itemSelection=null;
   filters=picker.read();const next=JSON.stringify(filters);if(next!==signature){pagina=1;signature=next;closeDetail();}const id=++generation;controller?.abort();controller=new AbortController();busy(true);$('erro').hidden=true;
   const params={...filters,relatorio:'saving',multiperiodo:'1',pagina,tamanho:Number($('savingSize').value),ordem,direcao,periodo:period};const url=new URLSearchParams();for(const[k,v]of Object.entries(params))for(const item of Array.isArray(v)?v:[v])if(item!==''&&item!=null)url.append(k,item);for(const k of ['ano','mes'])if(!filters[k]?.length&&!filters[k+'_exc']?.length)url.append(k,'');history.replaceState(null,'',location.pathname+'?'+url);
   try{const d=await SuprimentosApi.get('painel',params,controller.signal);if(id!==generation)return;const reveal=d.evolucao&&lastData?.evolucao?.item_codigo!==d.evolucao.item_codigo;lastData=d;render(d);if(reveal)requestAnimationFrame(()=>$('savingEvolution').scrollIntoView({block:'start',behavior:'smooth'}));}catch(e){if(id===generation)failure(e);}finally{if(id===generation)busy(false);}
