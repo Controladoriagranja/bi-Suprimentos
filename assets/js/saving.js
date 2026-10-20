@@ -1,9 +1,15 @@
 "use strict";
-window.SuprimentosSaving={async start(){
+window.SuprimentosSaving={
+ groupSeries(rows){
+  const groups=new Map();
+  for(const row of rows){const um=String(row.um||'').trim().toUpperCase();if(!groups.has(um))groups.set(um,new Map());const periods=groups.get(um);if(!periods.has(row.data))periods.set(row.data,{...row,um,quantidade:0,valor:0,registros:0,custo:0});const point=periods.get(row.data);point.quantidade+=Number(row.quantidade);point.custo+=Number(row.preco)*Number(row.quantidade);point.valor+=Number(row.valor||0);point.registros+=Number(row.registros||0);}
+  return new Map([...groups].map(([um,periods])=>[um,[...periods.values()].sort((a,b)=>String(a.data).localeCompare(String(b.data))).map(p=>({...p,preco:p.custo/p.quantidade}))]));
+ },
+ async start(){
  const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const number=(v,d=2)=>v==null?'—':Number(v).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
  const money=v=>v==null?'—':Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),price=v=>v==null?'—':Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:4}),date=v=>v?String(v).slice(0,10).split('-').reverse().join('/'):'—',percent=v=>v==null?'—':number(v*100)+'%';
- let picker,pagina=1,ordem='saving',direcao='desc',signature='',controller,generation=0,loading=false,lastData,detailController,detailTrigger,detailId,detailPage=1,period=new URLSearchParams(location.search).get('periodo')||'mes',charts=[];
+ let picker,pagina=1,ordem='saving',direcao='desc',signature='',controller,generation=0,loading=false,lastData,detailController,detailTrigger,detailId,detailPage=1,period=new URLSearchParams(location.search).get('periodo')||'mes',charts=[],chartUnit='';
  if(!['dia','semana','mes'].includes(period))period='mes';
  const busy=value=>{loading=value;$('carregando').hidden=!value;$('conteudo').setAttribute('aria-busy',String(value));};
  const failure=e=>{if(e.name==='AbortError')return;$('erro').textContent=e.message;$('erro').hidden=false;if([401,403].includes(e.status)){$('savingTabela').innerHTML='';lastData=null;closeDetail();$('savingCards').innerHTML='';charts.forEach(c=>c.dispose());charts=[];$('savingEvolution').hidden=true;}};
@@ -50,8 +56,10 @@ window.SuprimentosSaving={async start(){
   $('savingPeriodSelection').textContent=picker.periodSelection?.label||'Período: '+date(e.inicio)+' a '+date(e.fim);$('savingClearPeriod').hidden=!picker.periodSelection;
   document.querySelectorAll('[data-saving-period]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.savingPeriod===period)));
   if(!d.serie.length){host.innerHTML='<p class="com-empty">Nenhuma compra encontrada para o item neste período.</p>';return;}
-  const groups=new Map();for(const row of d.serie){if(!groups.has(row.um))groups.set(row.um,[]);groups.get(row.um).push(row);}
-  for(const [um,rows]of groups){
+  const groups=SuprimentosSaving.groupSeries(d.serie);
+  if(!groups.has(chartUnit))chartUnit=groups.keys().next().value;
+  if(groups.size>1){const label=document.createElement('label');label.className='sup-page-size';label.innerHTML='Unidade de medida <select aria-label="Unidade de medida do preço">'+[...groups.keys()].map(um=>'<option value="'+esc(um)+'" '+(um===chartUnit?'selected':'')+'>'+esc(um||'Não informada')+'</option>').join('')+'</select>';label.querySelector('select').onchange=e=>{chartUnit=e.target.value;renderEvolution(d);};host.append(label);}
+  for(const [um,rows]of [[chartUnit,groups.get(chartUnit)]]){
    const section=document.createElement('section');section.className='saving-evolution-unit';section.innerHTML='<h3>Preço pago · '+esc(um||'Unidade de medida não informada')+'</h3><div class="com-chart-viewport pcp-comparativo-chart-scroll"><div class="com-chart" role="img" aria-label="Evolução do preço pago por '+esc(um||'unidade')+'"></div></div><p class="com-chart-note"></p>';host.append(section);
    const el=section.querySelector('.com-chart'),c=echarts.init(el),mobile=PcpMobileScroll.active(),width=el.parentElement.clientWidth,left=mobile?48:75,right=mobile?12:30,visible=mobile?4:Math.max(4,Math.floor((width-left-right)/110));charts.push(c);c.resize({width,height:290});
    c.setOption({animation:false,grid:{left,right,top:38,bottom:54},tooltip:{trigger:'axis',triggerOn:mobile?'click':'mousemove|click',confine:true,formatter:items=>{const r=rows[items[0].dataIndex];return esc((period==='semana'?'Semana de ':'')+date(r.data))+'<br>Preço pago: <strong>'+esc(price(r.preco))+'</strong><br>Quantidade: '+esc(number(r.quantidade)+' '+um)+'<br>Valor líquido: '+esc(money(r.valor));}},xAxis:{type:'category',data:rows.map(r=>r.data),triggerEvent:true,axisLabel:{fontSize:mobile?8:10,interval:0,formatter:v=>period==='mes'?String(v).slice(5,7)+'/'+String(v).slice(0,4):date(v).slice(0,5)},axisTick:{show:false}},yAxis:{type:'value',axisLabel:{fontSize:mobile?8:10,formatter:compact},splitLine:{lineStyle:{type:'dotted',color:'#ddd5ce'}}},series:[{name:'Preço pago',type:'bar',barMaxWidth:58,data:rows.map(r=>r.preco),itemStyle:{color:'#70252c',borderRadius:[3,3,0,0]},label:{show:true,position:'top',fontSize:mobile?8:10,formatter:p=>compact(p.value),color:'#70252c'}}],dataZoom:PcpMobileScroll.config(c,rows.length,true,{left,right,visible,filterMode:'filter'})});
