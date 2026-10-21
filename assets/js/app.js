@@ -36,7 +36,8 @@
  function renderCharts(d){
   charts.forEach(c=>c.dispose());charts=[];
   const metric=page==='prazo'?'pmp_emissao':page==='sla'?'percentual':page==='solicitacoes'?'aprovadas':'valor',type=page==='prazo'?'days':page==='sla'?'percent':page==='solicitacoes'?'int':'money';$('serieTitulo').textContent=page==='prazo'?'Prazo de pagamento por período':page==='sla'?'Solicitações dentro do SLA por período':page==='solicitacoes'?'Solicitações por período de aprovação':'Compras por período';
-  chart('serieGrafico',d.serie,{metric,type,label:'data',temporal:true});
+  const series=page==='prazo'?d.serie.filter(r=>r[metric]!=null&&r[metric]!==''&&Number.isFinite(Number(r[metric]))):d.serie;
+  chart('serieGrafico',series,{metric,type,label:'data',temporal:true});
   if(page==='solicitacoes'){
    const groups=[...(d.extras.grupos||[])].sort((a,b)=>b.aprovadas-a.aprovadas),max=Math.max(1,...groups.map(r=>r.aprovadas));
    $('complementos').innerHTML='<article class="card com-panel"><header><div><h2>Solicitações por grupo comprador</h2><p>Com aprovação final ajustada · Clique no grupo para filtrar</p></div></header><div class="sup-sla-buyers">'+groups.map(r=>'<button type="button" class="sup-sla-buyer" data-sol-group="'+esc(r.grupo_comprador_filtro)+'"><span>'+esc(r.grupo_comprador_filtro)+'</span><span class="sup-sla-buyer-track"><i style="width:'+100*r.aprovadas/max+'%"></i></span><strong>'+num(r.aprovadas)+'</strong></button>').join('')+'</div></article><article class="card com-panel"><header><div><h2>Em cotação e pendentes por grupo</h2><p>Clique no grupo ou na barra para filtrar</p></div></header><div class="com-chart-viewport pcp-comparativo-chart-scroll"><div id="solStatusChart" class="com-chart" role="img" aria-label="Em cotação e pendentes por grupo"></div></div></article>';
