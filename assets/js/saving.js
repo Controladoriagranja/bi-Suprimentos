@@ -101,6 +101,17 @@ window.SuprimentosSaving={
    }picker.selectPeriod(period,String(row.data).slice(0,10));if(picker.periodSelection){for(const key of ['inicio','fim']){const input=picker.form.elements[key];if(input.value&&input.min&&input.value<input.min)input.value=input.min;if(input.value&&input.max&&input.value>input.max)input.value=input.max;}picker.periodSelection.applied=JSON.stringify(picker.calendarState());}load();}});
    c.getZr().on('click',event=>{if(!event.target){if(picker.clearPeriodSelection())load();else clearItem();}});
   }
+  renderQuantityEvolution(d,host);
+ }
+ function renderQuantityEvolution(d,host){
+  const rows=(d.serie_quantidade||[]).filter(r=>r.um===chartUnit).sort((a,b)=>String(a.data).localeCompare(String(b.data)));
+  if(!rows.length)return;
+  const um=chartUnit||'Unidade não informada',section=document.createElement('section');section.className='saving-evolution-unit';
+  section.innerHTML='<h3>Quantidade comprada · '+esc(um)+'</h3><p class="com-filter-note">Quantidade total de todas as notas fiscais emitidas em cada mês.</p><div class="com-chart-viewport pcp-comparativo-chart-scroll"><div class="com-chart" role="img" aria-label="Evolução da quantidade comprada em '+esc(um)+'"></div></div><p class="com-chart-note"></p>';host.append(section);
+  const el=section.querySelector('.com-chart'),c=echarts.init(el),mobile=PcpMobileScroll.active(),width=el.parentElement.clientWidth,left=mobile?48:75,right=mobile?12:30,visible=mobile?4:Math.max(4,Math.floor((width-left-right)/110)),month=v=>String(v).slice(5,7)+'/'+String(v).slice(0,4),compact=v=>Math.abs(v)>=1e6?number(v/1e6,1)+' mi':Math.abs(v)>=1e3?number(v/1e3,1)+' mil':number(v);
+  charts.push(c);c.resize({width,height:290});
+  c.setOption({animation:false,grid:{left,right,top:38,bottom:54},tooltip:{trigger:'axis',triggerOn:mobile?'click':'mousemove|click',confine:true,formatter:items=>{const r=rows[items[0].dataIndex];return esc(month(r.data))+'<br>Quantidade comprada: <strong>'+esc(number(r.quantidade)+' '+um)+'</strong><br>Notas fiscais: '+esc(number(r.notas,0));}},xAxis:{type:'category',data:rows.map(r=>month(r.data)),axisLabel:{fontSize:mobile?8:10,interval:0},axisTick:{show:false}},yAxis:{type:'value',axisLabel:{fontSize:mobile?8:10,formatter:compact},splitLine:{lineStyle:{type:'dotted',color:'#ddd5ce'}}},series:[{name:'Quantidade comprada',type:'bar',barMaxWidth:58,data:rows.map(r=>r.quantidade),itemStyle:{color:'#70252c',borderRadius:[3,3,0,0]},label:{show:true,position:'top',fontSize:mobile?8:10,formatter:p=>compact(p.value),color:'#70252c'}}],dataZoom:PcpMobileScroll.config(c,rows.length,true,{left,right,visible,filterMode:'filter'})});
+  const note=section.querySelector('.com-chart-note'),update=()=>{const start=c.getOption()?.dataZoom?.[0]?.startValue||0,last=Math.min(rows.length-1,start+visible-1);note.textContent=rows.length>visible?'Exibindo '+Math.min(visible,rows.length)+' de '+rows.length+' períodos · '+month(rows[start].data)+' a '+month(rows[last].data)+'. Mova somente pela barra abaixo do gráfico.':'Todos os '+rows.length+' períodos do recorte estão visíveis.';};c.on('datazoom',update);update();
  }
  let resizeTimer;addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(lastData)renderEvolution(lastData);},150);});
  async function load(){if(!picker)return;let filters=picker.read();if(!filters)return;if(itemSelection&&(filters.item_codigo.length!==1||filters.item_codigo[0]!==itemSelection.applied||filters.item_codigo_exc.length))itemSelection=null;
