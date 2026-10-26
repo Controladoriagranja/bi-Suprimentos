@@ -1,0 +1,41 @@
+"use strict";
+window.SuprimentosConformidade={async start(){
+ const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),num=v=>v==null?'—':Number(v).toLocaleString('pt-BR'),pct=v=>v==null?'—':(100*Number(v)).toLocaleString('pt-BR',{maximumFractionDigits:2})+'%',date=v=>v?String(v).slice(0,10).split('-').reverse().join('/'):'—',month=v=>String(v).slice(5,7)+'/'+String(v).slice(0,4);
+ let picker,controller,generation=0,page=1,signature='',charts=[],lastData,busy=false;
+ $('conteudo').innerHTML='<section id="confKpis" class="com-kpis"></section><article class="card com-panel"><header><div><h2>Evolução mensal das notas</h2><p>Notas recebidas e bloqueadas · Clique no mês para filtrar</p></div></header><div class="com-chart-viewport pcp-comparativo-chart-scroll"><div id="confMonths" class="com-chart" role="img" aria-label="Evolução mensal das notas recebidas e bloqueadas"></div></div><p id="confRule" class="com-chart-note"></p></article><article class="card com-panel"><header><div><h2>Fornecedores com mais notas bloqueadas</h2><p>Até 20 fornecedores · Cada nota conta uma vez · Clique para filtrar</p></div></header><div class="com-chart-viewport pcp-comparativo-chart-scroll"><div id="confSuppliers" class="com-chart" role="img" aria-label="Fornecedores com maior volume de erros"></div></div></article><article class="card com-panel"><header><div><h2>Notas bloqueadas · detalhamento</h2><p id="confCount"></p></div><label class="sup-page-size">Linhas <select id="confSize"><option>25</option><option selected>50</option><option>100</option></select></label></header><div id="confTable" class="com-table-scroll"></div><nav class="com-pager"><button id="confPrev" type="button" class="button secondary">← Anterior</button><span id="confPage"></span><button id="confNext" type="button" class="button secondary">Próxima →</button></nav></article>';
+ function chart(el,labels,series,onClick,percentages){
+  const c=echarts.init($(el)),mobile=PcpMobileScroll.active(),left=mobile?42:70,right=percentages?(mobile?38:54):20,visible=mobile?4:Math.max(4,Math.floor(($(el).clientWidth-left-right)/110));charts.push(c);
+  c.setOption({animation:false,grid:{left,right,top:40,bottom:66},legend:{data:[...series.map(s=>s.name),...(percentages?['Conformidade']:[])],textStyle:{fontSize:mobile?9:12}},tooltip:{trigger:'axis',confine:true,formatter:items=>esc(labels[items[0].dataIndex])+'<br>'+items.map(p=>esc(p.seriesName)+': <strong>'+(p.seriesName==='Conformidade'?pct(p.value):num(p.value))+'</strong>').join('<br>')+''},xAxis:{type:'category',data:labels,axisLabel:{interval:0,fontSize:mobile?8:10,width:90,overflow:'truncate'}},yAxis:[{type:'value',minInterval:1,axisLabel:{fontSize:mobile?8:10}},...(percentages?[{type:'value',min:0,max:1,axisLabel:{fontSize:mobile?8:10,formatter:pct},splitLine:{show:false}}]:[])],series:[...series.map((s,i)=>({...s,type:'bar',barMaxWidth:44,itemStyle:{color:i?'#b87536':'#70252c'},label:{show:true,position:'top',fontSize:mobile?8:10,formatter:p=>num(p.value)}})),...(percentages?[{name:'Conformidade',type:'line',yAxisIndex:1,data:percentages,itemStyle:{color:'#38745b'},connectNulls:false}]:[])],dataZoom:PcpMobileScroll.config(c,labels.length,true,{left,right,visible,filterMode:'filter'})});
+  if(!percentages)c.dispatchAction({type:'dataZoom',dataZoomIndex:0,startValue:0,endValue:Math.min(labels.length-1,visible-1)});
+  c.on('click',p=>{if(p.componentType==='series')onClick(p.dataIndex);});
+ }
+ function render(d){
+  charts.forEach(c=>c.dispose());charts=[];
+  const m=d.medidas;
+  $('confKpis').innerHTML=[['Taxa de Conformidade',pct(m.conformidade),'1 − (bloqueadas ÷ recebidas)'],['Notas recebidas',num(m.recebidas),'Notas distintas no período'],['Notas bloqueadas',num(m.bloqueadas),'Notas com pelo menos um bloqueio'],['Taxa de bloqueios',pct(m.taxa_bloqueios),'Bloqueadas ÷ recebidas']].map(([k,v,n])=>'<article class="card com-kpi"><span>'+esc(k)+'</span><strong>'+esc(v)+'</strong><small>'+esc(n)+'</small></article>').join('');
+  $('estado').textContent='Dados reais · '+num(m.recebidas)+' notas recebidas · '+(d.cobertura||[]).map(r=>(r.fonte==='recebidas'?'Recebidas':'Bloqueadas')+': '+date(r.inicio)+' a '+date(r.fim)).join(' · ');
+  $('ultimaAtualizacao').textContent=d.carregado_em?new Date(d.carregado_em).toLocaleString('pt-BR'):'—';
+  $('confRule').textContent=d.regra;
+  for(const id of ['confMonths','confSuppliers'])$(id).innerHTML='';
+  if(d.serie.length)chart('confMonths',d.serie.map(r=>month(r.data)),[{name:'Recebidas',data:d.serie.map(r=>r.recebidas)},{name:'Bloqueadas',data:d.serie.map(r=>r.bloqueadas)}],i=>{picker.set('ano',String(d.serie[i].data).slice(0,4));picker.set('mes',String(Number(String(d.serie[i].data).slice(5,7))));load();},d.serie.map(r=>r.conformidade));
+  else $('confMonths').innerHTML='<p class="com-empty">Nenhuma nota para os filtros selecionados.</p>';
+  if(d.fornecedores.length)chart('confSuppliers',d.fornecedores.map(r=>r.fornecedor+' - '+r.nome),[{name:'Notas bloqueadas',data:d.fornecedores.map(r=>r.quantidade)}],i=>{picker.set('fornecedor',d.fornecedores[i].fornecedor,d.fornecedores[i].nome);load();});
+  else $('confSuppliers').innerHTML='<p class="com-empty">Nenhum bloqueio para os filtros selecionados.</p>';
+  const cols=[['data','Entrada'],['empresa','Empresa'],['unidade','Unidade'],['nr','NR'],['nota','Nota fiscal'],['fornecedor','Cód. fornecedor'],['fornecedor_nome','Fornecedor'],['erros','Tipos de erro']];
+  $('confTable').innerHTML='<table><thead><tr>'+cols.map(([,n])=>'<th>'+esc(n)+'</th>').join('')+'</tr></thead><tbody>'+(d.dados.length?d.dados.map(r=>'<tr>'+cols.map(([k])=>'<td>'+esc(k==='data'?date(r[k]):r[k])+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="8">Nenhum bloqueio para os filtros selecionados.</td></tr>')+'</tbody></table>';PcpMobileScroll.table($('confTable'));
+  $('confCount').textContent=num(d.total)+' notas · Uma linha por nota/mês/empresa/unidade';$('confPage').textContent='Página '+d.pagina;$('confPrev').disabled=d.pagina<=1;$('confNext').disabled=!d.mais;
+ }
+ async function load(){
+  const filters=picker.read();if(!filters)return;const next=JSON.stringify(filters);if(next!==signature){page=1;signature=next;}
+  const id=++generation;controller?.abort();controller=new AbortController();busy=true;$('carregando').hidden=false;$('erro').hidden=true;
+  const params={...filters,relatorio:'conformidade',pagina:page,tamanho:Number($('confSize').value)};
+  const query=new URLSearchParams();for(const[k,v]of Object.entries(params))for(const value of Array.isArray(v)?v:[v])if(value!==''&&value!=null)query.append(k,value);history.replaceState(null,'',location.pathname+'?'+query);
+  try{const d=await SuprimentosApi.get('painel',params,controller.signal);if(id!==generation)return;lastData=d;render(d);}
+  catch(e){if(id!==generation||e.name==='AbortError')return;$('erro').hidden=false;$('erro').textContent=e.message;if([401,403].includes(e.status)){charts.forEach(c=>c.dispose());charts=[];lastData=null;$('conteudo').innerHTML='<p class="com-empty">Abra o relatório pela CENTRAL com seu usuário autorizado.</p>';}if(!lastData)$('estado').textContent='Consulta não concluída.';}
+  finally{if(id===generation){busy=false;$('carregando').hidden=true;}}
+ }
+ $('confPrev').onclick=()=>{page--;load();};$('confNext').onclick=()=>{page++;load();};$('confSize').onchange=()=>{page=1;load();};
+ try{const options=await SuprimentosApi.get('filtros',{relatorio:'conformidade'});picker=new SuprimentosFilters($('filtros'),options,new URLSearchParams(location.search),load);await load();}catch(e){$('erro').hidden=false;$('erro').textContent=e.message;$('estado').textContent='Consulta não concluída.';}
+ let resize;addEventListener('resize',()=>{clearTimeout(resize);resize=setTimeout(()=>{if(lastData)render(lastData);},150);});
+ setInterval(()=>{if(picker&&!document.hidden&&!busy)load();},SUPRIMENTOS_CONFIG.refreshMs);
+}};
