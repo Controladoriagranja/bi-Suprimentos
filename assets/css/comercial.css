@@ -254,3 +254,8 @@ body[data-page=positivacao] .com-main-filters{grid-template-columns:repeat(4,min
 .comercial-report .com-picker-panel :is(input[type=checkbox],input[type=radio]):focus-visible{outline:2px solid #7a1726;outline-offset:2px}
 
 .sup-table-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;min-width:0}.sup-table-actions .button{white-space:nowrap}
+
+/* Conformidade: mesmo espaçamento entre os filtros de dimensões e calendário. */
+.suprimentos-report[data-page=conformidade] .com-main-filters{gap:16px}
+.suprimentos-report[data-page=conformidade] .com-filter-field{gap:6px}
+@media(max-width:600px){.suprimentos-report[data-page=conformidade] .com-main-filters{gap:12px}}
