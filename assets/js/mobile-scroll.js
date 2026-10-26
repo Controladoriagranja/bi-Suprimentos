@@ -13,7 +13,7 @@
    }
    control.options={latest,snap};const signature=box.querySelector('thead')?.textContent||'';control.sync(control.signature!==signature);control.signature=signature;
   },
-  config(chart,count,changed,{left=48,right=22,filterMode='none',visible=4}={}){
+  config(chart,count,changed,{left=48,right=22,filterMode='none',visible=4,initial='end'}={}){
    let control=chart.__pcpMobileScroll;
    if(!control){
     const element=chart.getDom();let host=element.parentElement;
@@ -23,9 +23,9 @@
     chart.on('datazoom',()=>{const start=chart.getOption()?.dataZoom?.[0]?.startValue;if(Number.isFinite(start))range.value=start;});
    }
    control.visible=Math.max(1,Math.floor(visible));
-   const maximum=Math.max(0,count-control.visible),previous=chart.getOption()?.dataZoom?.[0]?.startValue,start=changed?maximum:Math.min(maximum,Number.isFinite(previous)?previous:maximum),range=control.range;
-   control.count=count;range.max=maximum;range.value=start;range.disabled=maximum===0;range.style.left=left+'px';range.style.right=right+'px';range.style.width='calc(100% - '+(left+right)+'px)';range.style.setProperty('--pcp-scroll-thumb',Math.max(32,Math.min(90,(chart.getDom().clientWidth-left-right)*Math.min(1,control.visible/Math.max(1,count))))+'px');
-   return [{id:'mobile-period-scroll',type:'slider',show:false,xAxisIndex:0,filterMode,startValue:start,endValue:Math.max(0,Math.min(count-1,start+control.visible-1)),zoomLock:true}];
+   const maximum=Math.max(0,count-control.visible),previous=chart.getOption()?.dataZoom?.[0]?.startValue,start=changed?(initial==='start'?0:maximum):Math.min(maximum,Number.isFinite(previous)?previous:(initial==='start'?0:maximum)),range=control.range;
+   control.count=count;range.max=maximum;range.value=start;range.disabled=maximum===0;range.hidden=maximum===0;chart.getDom().parentElement.classList.toggle('pcp-chart-no-scroll',maximum===0);range.style.left=left+'px';range.style.right=right+'px';range.style.width='calc(100% - '+(left+right)+'px)';range.style.setProperty('--pcp-scroll-thumb',Math.max(32,Math.min(90,(chart.getDom().clientWidth-left-right)*Math.min(1,control.visible/Math.max(1,count))))+'px');
+   return [{id:'mobile-period-scroll',type:'slider',show:false,showDataShadow:false,brushSelect:false,handleSize:0,moveHandleSize:0,xAxisIndex:0,filterMode,startValue:start,endValue:Math.max(0,Math.min(count-1,start+control.visible-1)),zoomLock:true}];
   }
  };
 

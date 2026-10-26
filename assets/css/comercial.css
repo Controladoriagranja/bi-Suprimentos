@@ -259,3 +259,9 @@ body[data-page=positivacao] .com-main-filters{grid-template-columns:repeat(4,min
 .suprimentos-report[data-page=conformidade] .com-main-filters{gap:16px}
 .suprimentos-report[data-page=conformidade] .com-filter-field{gap:6px}
 @media(max-width:600px){.suprimentos-report[data-page=conformidade] .com-main-filters{gap:12px}}
+
+/* Sem períodos ocultos, o gráfico não precisa de controle nem espaço de rolagem. */
+.comercial-report .com-chart-viewport.pcp-chart-no-scroll{padding-bottom:0}
+.comercial-report .pcp-mobile-scroll-range[hidden]{display:none!important}
+.comercial-report .pcp-mobile-scroll-range::-webkit-slider-thumb{box-shadow:none}
+.comercial-report .pcp-mobile-scroll-range::-moz-range-thumb{box-shadow:none}
