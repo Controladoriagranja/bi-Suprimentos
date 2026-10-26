@@ -1,13 +1,14 @@
 "use strict";
 (()=>{
  const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const pages={conformidade:'Taxa de Conformidade',prazo:'Prazo de Pagamento',sla:'SLA de Compras',solicitacoes:'SLA de Solicitações','abc-fornecedor':'ABC de Fornecedores','abc-comprador':'ABC de Compradores','abc-item':'ABC de Itens',saving:'Indicador de Saving'};
+ const pages={cte:'Indicador de Frete / CTE',conformidade:'Taxa de Conformidade',prazo:'Prazo de Pagamento',sla:'SLA de Compras',solicitacoes:'SLA de Solicitações','abc-fornecedor':'ABC de Fornecedores','abc-comprador':'ABC de Compradores','abc-item':'ABC de Itens',saving:'Indicador de Saving'};
  const requested=new URLSearchParams(location.search).get('relatorio'),page=pages[requested]?requested:'prazo',mobile=()=>PcpMobileScroll.active();
  const num=(v,d=0)=>v==null?'—':Number(v).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}),money=v=>v==null?'—':Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),date=v=>v?String(v).slice(0,10).split('-').reverse().join('/'):'—';
  const compact=v=>Math.abs(v)>=1e6?'R$ '+num(v/1e6,1)+' mi':Math.abs(v)>=1e3?'R$ '+num(v/1e3,1)+' mil':money(v);
  const format=(v,type)=>v==null?'—':type==='money'?money(v):type==='percent'?num(v*100,1)+'%':type==='days'?num(v)+' dias':type==='number'?num(v,2):type==='int'?num(v):type==='date'?date(v):String(v);
  let picker,filters={},filterSignature='',period='mes',pagination=1,itemPagination=1,revealItems=false,controller,generation=0,confirmed=false,loading=false,charts=[],lastData,lastFilters={},exporting=false,exportController;const visual=new Map();
  document.body.dataset.page=page;document.title=pages[page]+' | Suprimentos';$('titulo').textContent=pages[page];
+ if(page==='cte'){SuprimentosCte.start();return;}
  if(page==='conformidade'){SuprimentosConformidade.start();return;}
  if(page==='saving'){SuprimentosSaving.start();return;}
  function busy(value){loading=value;if($('exportarExcel'))$('exportarExcel').disabled=value||exporting;$('carregando').hidden=!value;$('conteudo').setAttribute('aria-busy',String(value));}

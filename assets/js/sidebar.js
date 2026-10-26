@@ -5,7 +5,7 @@
 (() => {
     const current = document.body.dataset.page || "";
 
-    const items = [{"id":"conformidade","label":"Taxa de Conformidade","href":"index.html?relatorio=conformidade"},{"id": "prazo", "label": "Prazo de Pagamento", "href": "index.html?relatorio=prazo"}, {"id": "sla", "label": "SLA de Compras", "href": "index.html?relatorio=sla"}, {"id": "solicitacoes", "label": "SLA de Solicitações", "href": "index.html?relatorio=solicitacoes"}, {"id": "abc-fornecedor", "label": "ABC de Fornecedores", "href": "index.html?relatorio=abc-fornecedor"}, {"id": "abc-comprador", "label": "ABC de Compradores", "href": "index.html?relatorio=abc-comprador"}, {"id": "abc-item", "label": "ABC de Itens", "href": "index.html?relatorio=abc-item"}, {"id":"saving","label":"Indicador de Saving","href":"index.html?relatorio=saving"}];
+    const items = [{"id":"cte","label":"Frete / CTE","href":"index.html?relatorio=cte"},{"id":"conformidade","label":"Taxa de Conformidade","href":"index.html?relatorio=conformidade"},{"id": "prazo", "label": "Prazo de Pagamento", "href": "index.html?relatorio=prazo"}, {"id": "sla", "label": "SLA de Compras", "href": "index.html?relatorio=sla"}, {"id": "solicitacoes", "label": "SLA de Solicitações", "href": "index.html?relatorio=solicitacoes"}, {"id": "abc-fornecedor", "label": "ABC de Fornecedores", "href": "index.html?relatorio=abc-fornecedor"}, {"id": "abc-comprador", "label": "ABC de Compradores", "href": "index.html?relatorio=abc-comprador"}, {"id": "abc-item", "label": "ABC de Itens", "href": "index.html?relatorio=abc-item"}, {"id":"saving","label":"Indicador de Saving","href":"index.html?relatorio=saving"}];
 
     const root = document.createElement("div");
     root.className = "side-nav-root";
