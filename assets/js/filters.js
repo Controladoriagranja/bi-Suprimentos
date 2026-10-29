@@ -6,7 +6,7 @@ window.SuprimentosFilters=class {
   const fields=options.campos.map(c=>[c.codigo,c.nome]);this.fields=[...fields.slice(0,3),['ano','Ano'],['mes','Mês'],...fields.slice(3)];this.primaryCount=6;if(options.relatorio==='sla'){const primary=['mes','ano','grupo','unidade','comprador','gestao','situacao'];this.fields=[...primary.map(k=>[k,k==='mes'?'Mês':k==='ano'?'Ano':fields.find(([f])=>f===k)[1]]),...fields.filter(([k])=>!primary.includes(k))];this.primaryCount=7;}
   if(options.relatorio==='saving'){const primary=['tipo_sc','mes','ano','comprador','empresa','unidade','grupo_item','fornecedor','item_codigo'];this.fields=primary.map(k=>[k,k==='mes'?'Mês':k==='ano'?'Ano':fields.find(([f])=>f===k)[1]]);this.primaryCount=9;}
   if(options.relatorio==='solicitacoes'){const primary=['solicitacao','mes','ano','grupo_comprador_filtro','situacao','unidade','oc'];this.fields=[...primary.map(k=>[k,k==='mes'?'Mês':k==='ano'?'Ano':fields.find(([f])=>f===k)[1]]),...fields.filter(([k])=>!primary.includes(k))];this.primaryCount=7;}
-  if(['conformidade','cte'].includes(options.relatorio))this.primaryCount=7;
+  if(options.relatorio==='conformidade')this.primaryCount=8;if(options.relatorio==='cte')this.primaryCount=7;
   this.fixedCfop=options.acesso?.cfop_vendas_fixo===true||['seller','supervisor'].includes(options.acesso?.modo);
   this.months=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   this.defaults={...options.padrao,ano:[],mes:[]};
