@@ -40,7 +40,7 @@ window.SuprimentosConformidade={async start(){
   const cols=[['data','Entrada'],['empresa','Empresa'],['unidade','Unidade'],['nr','NR'],['nota','Nota fiscal'],['fornecedor','Cód. fornecedor'],['fornecedor_nome','Fornecedor'],['erros','Tipos de erro']];
   const widths=[86,60,60,90,100,90,260,360];$('confTable').style.setProperty('--sup-table-width',widths.reduce((a,b)=>a+b,0)+'px');
   $('confTable').innerHTML='<table class="com-table sup-table"><colgroup>'+widths.map(w=>'<col style="width:'+w+'px;--sup-col-width:'+w+'px">').join('')+'</colgroup><thead><tr>'+cols.map(([,n])=>'<th scope="col">'+esc(n)+'</th>').join('')+'</tr></thead><tbody>'+(d.dados.length?d.dados.map(r=>'<tr>'+cols.map(([k],i)=>'<'+(i?'td':'th scope="row"')+(i>=6?' style="white-space:normal"':'')+'>'+esc(k==='data'?date(r[k]):r[k])+'</'+(i?'td':'th')+'>').join('')+'</tr>').join(''):'<tr><td class="com-empty" colspan="8">Nenhum bloqueio para os filtros selecionados.</td></tr>')+'</tbody></table>';PcpMobileScroll.table($('confTable'));
-  $('confCount').textContent=num(d.total)+' notas · Uma linha por nota/mês/empresa/unidade';$('confPage').textContent='Página '+d.pagina;$('confPrev').disabled=d.pagina<=1;$('confNext').disabled=!d.mais;
+  $('confCount').textContent=num(d.total)+' notas · Uma linha por nota/mês/empresa/unidade/fornecedor';$('confPage').textContent='Página '+d.pagina;$('confPrev').disabled=d.pagina<=1;$('confNext').disabled=!d.mais;
  }
  async function load(){
   const filters=picker.read();if(!filters)return;const next=JSON.stringify(filters);if(next!==signature){page=1;signature=next;}
